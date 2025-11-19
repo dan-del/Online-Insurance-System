@@ -1,3 +1,9 @@
+<?php 
+// 1. CRITICAL: Start the session to access $_SESSION["role"]
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +17,75 @@
         }
         .main-content {
             padding-top: 20px;
+        }
+        /* 2. CHATBOT CSS - MOVED TO HEAD SECTION */
+        #chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        #chat-window {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+        #chat-header {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            cursor: pointer;
+        }
+        #close-chat {
+            float: right;
+            cursor: pointer;
+        }
+        #chat-body {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+        }
+        #chat-input {
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .message {
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+        .user {
+            background-color: #dcf8c6;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot {
+            background-color: #e5e5ea;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -26,14 +101,14 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="dashboard.php">Dashboard</a>
                     </li>
-                    <?php if ($_SESSION["role"] === 'customer'): ?>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === 'customer'): ?>
                         <li class="nav-item"><a class="nav-link" href="apply_policy.php">Apply for Policy</a></li>
                         <li class="nav-item"><a class="nav-link" href="my_policies.php">My Policies</a></li>
                         <li class="nav-item"><a class="nav-link" href="make_payment.php">Make Payment</a></li>
-                    <?php elseif ($_SESSION["role"] === 'company_official'): ?>
+                    <?php elseif (isset($_SESSION["role"]) && $_SESSION["role"] === 'company_official'): ?>
                         <li class="nav-item"><a class="nav-link" href="view_applications.php">View Applications</a></li>
                         <li class="nav-item"><a class="nav-link" href="admin_policy_types.php">Manage Policy Types</a></li>
-                    <?php elseif ($_SESSION["role"] === 'administrator'): ?>
+                    <?php elseif (isset($_SESSION["role"]) && $_SESSION["role"] === 'administrator'): ?>
                         <li class="nav-item"><a class="nav-link" href="view_applications.php">Manage Applications</a></li>
                         <li class="nav-item"><a class="nav-link" href="admin_users.php">Manage Users</a></li>
                         <li class="nav-item"><a class="nav-link" href="admin_policy_types.php">Manage Policy Types</a></li>
